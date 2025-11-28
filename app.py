@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import threading
+import time
 import worker  # worker.py を読み込む
 
 app = Flask(__name__)
@@ -31,6 +32,11 @@ def start():
 def stop():
     # 停止命令を出す
     worker.stop_task()
+    
+    # ★重要：裏で停止処理が完了するまで3秒くらい待ってあげる
+    # そうしないと、画面がリロードされた時にまだ「稼働中」と判定されてしまう
+    time.sleep(3)
+    
     return redirect(url_for('index'))
 
 if __name__ == "__main__":
