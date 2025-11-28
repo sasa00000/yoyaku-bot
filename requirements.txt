@@ -1,0 +1,5 @@
+flask
+selenium
+line-bot-sdk
+gunicorn
+webdriver-manager

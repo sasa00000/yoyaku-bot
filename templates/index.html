@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>予約キャンセル待ちBot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">キャンセル待ち設定</h2>
+        
+        <form action="/start" method="post">
+            
+            <div class="mb-3">
+                <label class="form-label">ユーザーID</label>
+                <input type="text" class="form-control" name="login_id" placeholder="例: 00143312" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">パスワード</label>
+                <input type="password" class="form-control" name="password" placeholder="例: abeshido" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">予約したい日付</label>
+                <input type="text" class="form-control" name="target_date" placeholder="例: 20251128" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-lg">キャンセル待ちスタート</button>
+        </form>
+    </div>
+</body>
+</html>
