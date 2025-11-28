@@ -1,24 +1,24 @@
-# Python 3.9が入ったベース環境を使う
+# Python 3.9の軽量版を使う
 FROM python:3.9-slim
 
-# サーバーの基本ツールとChromeをインストール
+# 1. 必要なツールをインストール
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     unzip \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    && apt-get clean
+    && rm -rf /var/lib/apt/lists/*
 
-# 必要なPythonライブラリをインストール
+# 2. Chromeを直接ダウンロードしてインストール (エラーが出ない最新の方法)
+RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && apt-get update \
+    && apt-get install -y ./google-chrome-stable_current_amd64.deb \
+    && rm google-chrome-stable_current_amd64.deb
+
+# 3. Pythonのライブラリをインストール
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# すべてのファイルをサーバーにコピー
+# 4. すべてのファイルをコピーしてアプリ起動
 COPY . .
-
-# アプリを起動（gunicornを使って安定させる）
 CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]
