@@ -47,6 +47,14 @@ def check_cancellation(driver):
     except:
         return None, None
 
+# ★この新しい関数を追加してください！
+def smart_sleep(seconds):
+    """停止命令を監視しながら待機する関数"""
+    for _ in range(seconds):
+        if should_stop: # もし停止命令が来てたら
+            return      # すぐに待機をやめる
+        sleep(1)
+
 # --- ★停止命令を出す関数 ---
 def stop_task():
     global should_stop
@@ -110,11 +118,10 @@ def run_task(login_id, password, target_date):
         click(driver, search_btn)
         click(driver, search_btn)
 
-        # ★無限ループ監視（停止フラグを毎回チェック）
         while True:
-            # 停止ボタンが押されていたらループを抜ける
+            # ループの頭でチェック
             if should_stop:
-                print("ユーザー操作により停止します")
+                print("停止命令によりループを終了します")
                 break
 
             driver.refresh()
@@ -123,12 +130,18 @@ def run_task(login_id, password, target_date):
             district, school = check_cancellation(driver) 
             
             if school:
-                msg = f"{school}が見つかりました！（予約処理は省略）"
-                line_bot_api.push_message(MY_USER_ID, TextSendMessage(text=msg))
+                # ... (通知処理) ...
                 break 
             
             print("空きなし...再チェックします")
-            sleep(10) # 負荷軽減
+            
+            # ★ここを sleep(10) ではなく smart_sleep(10) に変える！
+            smart_sleep(10)
+            
+            # 待機中に停止ボタンが押された場合のために、ここでもチェック
+            if should_stop:
+                print("待機中に停止命令が来ました")
+                break
 
     except Exception as e:
         print(f"エラー発生: {e}")
