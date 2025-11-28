@@ -42,11 +42,25 @@
                     <h4 class="mb-3 text-success">現在、予約を監視しています</h4>
                     <p class="text-muted mb-4">ブラウザを閉じても監視は続きます。<br>予約完了時にLINE通知が届きます。</p>
                     
-                    <form action="/stop" method="post">
-                        <button type="submit" class="btn btn-danger btn-lg w-100 shadow-sm">
+                    <form action="/stop" method="post" onsubmit="return showStopping(this);">
+                        <button type="submit" id="stopBtn" class="btn btn-danger btn-lg w-100 shadow-sm">
                             <i class="fas fa-stop-circle"></i> 監視を停止する
                         </button>
                     </form>
+
+                    <script>
+                        function showStopping(form) {
+                            // ボタンを取得
+                            var btn = document.getElementById('stopBtn');
+                            
+                            // ボタンを無効化して、文字を変える
+                            btn.disabled = true;
+                            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 停止処理中...';
+                            
+                            // フォームを送信
+                            return true;
+                        }
+                    </script>
                     <p class="text-muted mt-2 small">※停止には数秒かかる場合があります</p>
                 </div>
 
