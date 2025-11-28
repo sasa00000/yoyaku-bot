@@ -7,6 +7,10 @@ from time import sleep
 from linebot import LineBotApi
 from linebot.models import TextSendMessage
 import os
+import sys
+
+# バッファリング（溜め込み）を強制的に無効化し、1行ごとに即出力させる
+sys.stdout.reconfigure(line_buffering=True)
 
 # ★状態管理用の変数（サーバーが生きている限り記憶される）
 is_active = False     # 今動いているか？
