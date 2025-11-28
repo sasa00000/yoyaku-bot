@@ -19,7 +19,7 @@ def start():
     password = request.form['password']
     target_date = request.form['target_date']
 
-    # スレッド起動
+    # スレッド起動　
     thread = threading.Thread(
         target=worker.run_task,
         args=(login_id, password, target_date)
@@ -28,14 +28,16 @@ def start():
 
     return redirect(url_for('index'))
 
+# stop関数をこれに書き換え
 @app.route('/stop', methods=['POST'])
 def stop():
-    # 停止命令を出す
     worker.stop_task()
     
-    # ★重要：裏で停止処理が完了するまで3秒くらい待ってあげる
-    # そうしないと、画面がリロードされた時にまだ「稼働中」と判定されてしまう
-    time.sleep(3)
+    # 完全に止まるまで最大20秒待つ（これが大事！）
+    for _ in range(20):
+        if not worker.is_active:
+            break
+        time.sleep(1)
     
     return redirect(url_for('index'))
 
