@@ -1,6 +1,9 @@
 # Python 3.9の軽量版を使う
 FROM python:3.9-slim
 
+# ★この1行を追加！（ログを溜め込まずにすぐ出す設定）
+ENV PYTHONUNBUFFERED=1
+
 # 1. 必要なツールをインストール
 RUN apt-get update && apt-get install -y \
     wget \
