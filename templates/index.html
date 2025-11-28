@@ -16,14 +16,45 @@
             70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
             100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
         }
+        /* 画像のスタイル（丸く切り抜くなど） */
+        .custom-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%; /* 丸くする */
+            object-fit: cover;
+            margin-right: 10px;
+        }
     </style>
+    
+    <script>
+        function showStopping(form) {
+            // ボタンを取得
+            var btn = document.getElementById('stopBtn');
+            if (!btn) return true; // ボタンがなければそのまま送信
+
+            // 即座に見た目を変える
+            btn.style.opacity = '0.7';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 停止処理中...';
+            
+            // 重要：ボタンを無効化する（連打防止）
+            // ただし、form送信自体は妨げないようにsetTimeoutを使う手もあるが
+            // ここではpointer-eventsでクリックだけ無効化する
+            btn.style.pointerEvents = 'none';
+
+            return true; // 送信許可
+        }
+    </script>
 </head>
 <body>
     <div class="container mt-4" style="max-width: 600px;">
         
-        <div class="text-center mb-4">
-            <h2 class="fw-bold"><i class="fas fa-robot text-primary"></i> 予約Bot</h2>
+        <div class="text-center mb-4 d-flex justify-content-center align-items-center">
+            <img src="/static/rapora.jpg" alt="Icon" class="custom-icon">
             
+            <h2 class="fw-bold m-0">harpキャンセル待ち予約Bot</h2>
+        </div>
+        
+        <div class="text-center mb-4">
             {% if is_running %}
                 <span class="badge bg-success status-badge pulse">
                     <i class="fas fa-sync fa-spin"></i> 24時間 監視中...
@@ -47,28 +78,15 @@
                             <i class="fas fa-stop-circle"></i> 監視を停止する
                         </button>
                     </form>
-
-                    <script>
-                        function showStopping(form) {
-                            // ボタンを取得
-                            var btn = document.getElementById('stopBtn');
-                            
-                            // ボタンを無効化して、文字を変える
-                            btn.disabled = true;
-                            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 停止処理中...';
-                            
-                            // フォームを送信
-                            return true;
-                        }
-                    </script>
-                    <p class="text-muted mt-2 small">※停止には数秒かかる場合があります</p>
+                    
+                    <p class="text-muted mt-2 small">※停止には最大20秒ほどかかる場合があります</p>
                 </div>
 
             {% else %}
                 <form action="/start" method="post">
                     <div class="mb-3">
                         <label class="form-label fw-bold">ログインID</label>
-                        <input type="text" class="form-control form-control-lg" name="login_id" placeholder="00143312" required>
+                        <input type="text" class="form-control form-control-lg" name="login_id" placeholder="00000000" required>
                     </div>
                     
                     <div class="mb-3">
@@ -79,7 +97,6 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold">ターゲット日付</label>
                         <input type="text" class="form-control form-control-lg" name="target_date" placeholder="20251128" required>
-                        <div class="form-text">例: 2025年11月28日 → 20251128</div>
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-lg w-100 mt-3 shadow-sm">
