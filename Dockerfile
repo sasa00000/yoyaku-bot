@@ -24,5 +24,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # 4. すべてのファイルをコピーしてアプリ起動
 COPY . .
-# ★ここを変更！ workers 1 で脳みそを一つにする
-CMD ["gunicorn", "--bind", "0.0.0.0:80", "--workers", "1", "--threads", "8", "--timeout", "0", "app:app"]
+
+# 【重要2】Gunicornの設定を「お喋りモード」にする
+# --access-logfile - : アクセスログを画面に出す
+# --error-logfile -  : エラーログを画面に出す
+# --capture-output   : Pythonのprint出力をキャッチして画面に出す
+# --enable-stdio-inheritance : 標準出力を継承する
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "--workers", "1", "--threads", "8", "--timeout", "0", "--access-logfile", "-", "--error-logfile", "-", "--capture-output", "--enable-stdio-inheritance", "app:app"]
