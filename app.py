@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import threading
 import worker  # worker.py を読み込む
 
@@ -6,32 +6,32 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    # workerが今動いているかを確認してHTMLに渡す
+    return render_template('index.html', is_running=worker.is_active)
 
 @app.route('/start', methods=['POST'])
 def start():
-    # HTMLフォームからデータを受け取る
+    if worker.is_active:
+        return redirect(url_for('index'))
+
     login_id = request.form['login_id']
     password = request.form['password']
     target_date = request.form['target_date']
 
-    # 裏側（スレッド）でSeleniumを起動する
-    # ここで worker.py の run_task 関数にデータを渡す！
+    # スレッド起動
     thread = threading.Thread(
         target=worker.run_task,
         args=(login_id, password, target_date)
     )
     thread.start()
 
-    return f"""
-    <h2>監視を開始しました！</h2>
-    <ul>
-        <li>ID: {login_id}</li>
-        <li>日付: {target_date}</li>
-    </ul>
-    <p>このページは閉じても大丈夫です。</p>
-    <a href="/">戻る</a>
-    """
+    return redirect(url_for('index'))
+
+@app.route('/stop', methods=['POST'])
+def stop():
+    # 停止命令を出す
+    worker.stop_task()
+    return redirect(url_for('index'))
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
