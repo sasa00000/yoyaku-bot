@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Chromeを直接ダウンロードしてインストール (エラーが出ない最新の方法)
+# 2. Chromeを直接ダウンロードしてインストール
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
     && apt-get update \
     && apt-get install -y ./google-chrome-stable_current_amd64.deb \
@@ -21,4 +21,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # 4. すべてのファイルをコピーしてアプリ起動
 COPY . .
-CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]
+# ★ここを変更！ workers 1 で脳みそを一つにする
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "--workers", "1", "--threads", "8", "--timeout", "0", "app:app"]
