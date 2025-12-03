@@ -9,6 +9,8 @@ RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
     unzip \
+    fonts-ipafont-gothic \
+    fonts-noto-cjk \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Chromeを直接ダウンロードしてインストール
