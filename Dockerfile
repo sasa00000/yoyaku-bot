@@ -1,7 +1,8 @@
 # Python 3.9の軽量版を使う
 FROM python:3.9-slim
 
-# ★この1行を追加！（ログを溜め込まずにすぐ出す設定）
+# ★ここが追加ポイント1：環境変数を「アジア/東京」にする
+ENV TZ=Asia/Tokyo
 ENV PYTHONUNBUFFERED=1
 
 # 1. 必要なツールをインストール
@@ -11,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     fonts-ipafont-gothic \
     fonts-noto-cjk \
+    tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Chromeを直接ダウンロードしてインストール
